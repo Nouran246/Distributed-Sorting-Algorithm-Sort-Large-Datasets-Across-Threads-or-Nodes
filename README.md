@@ -73,12 +73,7 @@ public class SortMapper extends Mapper<LongWritable, Text, IntWritable, NullWrit
 ### 2. Reducer
 
 ```java
-public class SortReducer extends Reducer<IntWritable, NullWritable, IntWritable, NullWritable> {
-    public void reduce(IntWritable key, Iterable<NullWritable> values, Context context)
-            throws IOException, InterruptedException {
-        context.write(key, NullWritable.get());
-    }
-}
+
 ```
 
 * Receives the sorted keys (numbers) from the mapper output.
