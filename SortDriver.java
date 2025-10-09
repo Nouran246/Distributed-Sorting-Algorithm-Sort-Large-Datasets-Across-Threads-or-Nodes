@@ -18,6 +18,8 @@ public class SortDriver {
 
         job.setJarByClass(SortDriver.class);
         job.setMapperClass(SortMapper.class);
+        
+        //SortReducer still needs to be implemented 
         job.setReducerClass(SortReducer.class);
 
         job.setOutputKeyClass(IntWritable.class);
