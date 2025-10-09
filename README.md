@@ -224,7 +224,5 @@ hdfs dfs -cat /user/output/part-r-00000
 
 ## License
 
-This project is developed for educational purposes as part of the **Distributed Systems** course at **[Your University Name]**.
+This project is developed for educational purposes as part of the **Distributed Systems** course at **Misr International University**.
 You may reuse and modify it for learning and research purposes.
-
-```
