@@ -213,16 +213,12 @@ hdfs dfs -cat /user/output/part-r-00000
 * Sorting is achieved through Hadoop’s **shuffle and sort** process across multiple nodes or threads.
 * The project demonstrates **scalability**, **parallel processing**, and **fault tolerance**.
 
----
-
 ## Contributors
 
-| Name                      | ID         | Role                         |
-| ------------------------- | ---------- | ---------------------------- |
-| Nouran Hassan Ahmed       | 2022/00062 | Mapper & Project Coordinator |
-| [Add teammate names here] | [ID]       | Reducer Implementation       |
-| [Add teammate names here] | [ID]       | Driver Setup & Testing       |
-| [Add teammate names here] | [ID]       | Presentation & Documentation |
+- [Nouran Hassan](https://github.com/Nouran246)
+- [Malak Mohamed](https://github.com/MalakMohameed)
+- [Yahia-Elshobokshy](https://github.com/Yahia-Elshobokshy)
+- [Roaa Khaled](https://github.com/Rowlkh)
 
 ---
 
@@ -231,9 +227,4 @@ hdfs dfs -cat /user/output/part-r-00000
 This project is developed for educational purposes as part of the **Distributed Systems** course at **[Your University Name]**.
 You may reuse and modify it for learning and research purposes.
 
-```
-
----
-
-Would you like me to make a **shorter summary version** (like for your GitHub project description box) — just a few lines that will appear under the repo title?
 ```
