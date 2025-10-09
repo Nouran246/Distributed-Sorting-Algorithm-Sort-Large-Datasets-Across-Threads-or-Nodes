@@ -1,4 +1,3 @@
-```markdown
 # Distributed Sorting Algorithm – Sort Large Datasets Across Threads or Nodes
 
 ## Overview  
