@@ -1,36 +1,36 @@
-Distributed Sorting Algorithm – Sort Large Datasets Across Threads or Nodes
-Overview
+```markdown
+# Distributed Sorting Algorithm – Sort Large Datasets Across Threads or Nodes
 
-This project implements a Distributed Sorting Algorithm using Apache Hadoop’s MapReduce framework.
-It is designed to efficiently sort large datasets by distributing the sorting process across multiple threads or nodes, making use of Hadoop’s parallel data processing capabilities.
+## Overview  
+This project implements a **Distributed Sorting Algorithm** using **Apache Hadoop’s MapReduce framework**.  
+It is designed to efficiently sort **large datasets** by distributing the sorting process across multiple threads or nodes, making use of Hadoop’s **parallel data processing** capabilities.  
 
-The project was developed as part of the Distributed Systems course to demonstrate how distributed computing principles can handle data-intensive operations such as large-scale sorting.
+The project was developed as part of the **Distributed Systems** course to demonstrate how distributed computing principles can handle data-intensive operations such as large-scale sorting.
 
-Project Objectives
+---
 
-Implement a scalable sorting algorithm using Hadoop.
+## Project Objectives  
+- Implement a **scalable sorting algorithm** using Hadoop.  
+- Utilize the **MapReduce paradigm** to distribute the sorting workload across nodes.  
+- Demonstrate **parallelism**, **fault tolerance**, and **data distribution** in a real-world scenario.  
+- Understand Hadoop’s **Mapper**, **Reducer**, and **Driver** components and their coordination.
 
-Utilize the MapReduce paradigm to distribute the sorting workload across nodes.
+---
 
-Demonstrate parallelism, fault tolerance, and data distribution in a real-world scenario.
+## System Requirements  
+To run this project locally or on a cluster, you need:  
+- **Java JDK 8** or higher  
+- **Hadoop 3.x** (set up in pseudo-distributed or fully distributed mode)  
+- **Linux / macOS / Windows Subsystem for Linux (WSL)** environment  
+- At least **8 GB of RAM** and **10 GB of free disk space**  
+- **SSH** configured for Hadoop  
 
-Understand Hadoop’s Mapper, Reducer, and Driver components and their coordination.
+---
 
-System Requirements
+## Project Structure  
 
-To run this project locally or on a cluster, you need:
+```
 
-Java JDK 8 or higher
-
-Hadoop 3.x (set up in pseudo-distributed or fully distributed mode)
-
-Linux / macOS / Windows Subsystem for Linux (WSL) environment
-
-At least 8 GB of RAM and 10 GB of free disk space
-
-SSH configured for Hadoop
-
-Project Structure
 Distributed-Sorting-Algorithm/
 │
 ├── src/
@@ -46,8 +46,15 @@ Distributed-Sorting-Algorithm/
 ├── README.md
 └── pom.xml (if using Maven)
 
-Implementation Details
-1. Mapper
+````
+
+---
+
+## Implementation Details  
+
+### 1. Mapper  
+
+```java
 public class SortMapper extends Mapper<LongWritable, Text, IntWritable, NullWritable> {
     public void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
@@ -55,30 +62,34 @@ public class SortMapper extends Mapper<LongWritable, Text, IntWritable, NullWrit
         context.write(new IntWritable(num), NullWritable.get());
     }
 }
+````
 
+* Reads each line (integer) from the input file.
+* Converts it into an integer key.
+* Emits the number as the key and `NullWritable` as the placeholder value.
+* Hadoop automatically sorts keys during the shuffle phase.
 
-Reads each line (integer) from the input file.
+---
 
-Converts it into an integer key.
+### 2. Reducer
 
-Emits the number as the key and NullWritable as the placeholder value.
-
-Hadoop automatically sorts keys during the shuffle phase.
-
-2. Reducer
+```java
 public class SortReducer extends Reducer<IntWritable, NullWritable, IntWritable, NullWritable> {
     public void reduce(IntWritable key, Iterable<NullWritable> values, Context context)
             throws IOException, InterruptedException {
         context.write(key, NullWritable.get());
     }
 }
+```
 
+* Receives the sorted keys (numbers) from the mapper output.
+* Simply writes them to the output since Hadoop already sorts the keys during the shuffle/sort phase.
 
-Receives the sorted keys (numbers) from the mapper output.
+---
 
-Simply writes them to the output since Hadoop already sorts the keys during the shuffle/sort phase.
+### 3. Driver
 
-3. Driver
+```java
 public class SortDriver {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
@@ -95,109 +106,135 @@ public class SortDriver {
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
+```
 
+* Sets up the Hadoop job configuration.
+* Specifies the Mapper, Reducer, and output types.
+* Defines input and output paths.
+* Executes the MapReduce job.
 
-Sets up the Hadoop job configuration.
+---
 
-Specifies the Mapper, Reducer, and output types.
+## How It Works
 
-Defines input and output paths.
+1. **Input Stage**
 
-Executes the MapReduce job.
+   * The dataset (e.g., `numbers.txt`) is stored in HDFS.
+   * Each line represents an integer to be sorted.
 
-How It Works
+2. **Map Stage**
 
-Input Stage
+   * Each node reads part of the input and emits `(number, NullWritable)` pairs.
 
-The dataset (e.g., numbers.txt) is stored in HDFS.
+3. **Shuffle and Sort Stage**
 
-Each line represents an integer to be sorted.
+   * Hadoop automatically sorts keys (numbers) before passing them to the Reducer.
 
-Map Stage
+4. **Reduce Stage**
 
-Each node reads part of the input and emits (number, NullWritable) pairs.
+   * Reducers write out the sorted keys as final output.
 
-Shuffle and Sort Stage
+5. **Output Stage**
 
-Hadoop automatically sorts keys (numbers) before passing them to the Reducer.
+   * The sorted data is stored in HDFS in the output directory you specify.
 
-Reduce Stage
+---
 
-Reducers write out the sorted keys as final output.
+## Example
 
-Output Stage
+**Input (`numbers.txt`):**
 
-The sorted data is stored in HDFS in the output directory you specify.
-
-Example
-
-Input (numbers.txt):
-
+```
 5
 1
 9
 3
 7
 2
+```
 
+**Command to Run:**
 
-Command to Run:
-
+```bash
 hadoop jar DistributedSort.jar SortDriver /user/input/numbers.txt /user/output
+```
 
+**Output (in HDFS `/user/output/part-r-00000`):**
 
-Output (in HDFS /user/output/part-r-00000):
-
+```
 1
 2
 3
 5
 7
 9
+```
 
-How to Run Locally (Pseudo-Distributed Mode)
+---
 
-Start Hadoop
+## How to Run Locally (Pseudo-Distributed Mode)
 
+1. **Start Hadoop**
+
+```bash
 start-dfs.sh
 start-yarn.sh
+```
 
+2. **Create Directories in HDFS**
 
-Create Directories in HDFS
-
+```bash
 hdfs dfs -mkdir /user
 hdfs dfs -mkdir /user/input
+```
 
+3. **Upload Input File**
 
-Upload Input File
-
+```bash
 hdfs dfs -put input/numbers.txt /user/input
+```
 
+4. **Run the Job**
 
-Run the Job
-
+```bash
 hadoop jar DistributedSort.jar SortDriver /user/input /user/output
+```
 
+5. **View Results**
 
-View Results
-
+```bash
 hdfs dfs -cat /user/output/part-r-00000
+```
 
-Expected Results
+---
 
-The output file will contain sorted integers in ascending order.
+## Expected Results
 
-Sorting is achieved through Hadoop’s shuffle and sort process across multiple nodes or threads.
+* The output file will contain **sorted integers in ascending order**.
+* Sorting is achieved through Hadoop’s **shuffle and sort** process across multiple nodes or threads.
+* The project demonstrates **scalability**, **parallel processing**, and **fault tolerance**.
 
-The project demonstrates scalability, parallel processing, and fault tolerance.
+---
 
-Contributors
-Name	ID	Role
-Nouran Hassan Ahmed	2022/00062	Mapper & Project Coordinator
-[Add teammate names here]	[ID]	Reducer Implementation
-[Add teammate names here]	[ID]	Driver Setup & Testing
-[Add teammate names here]	[ID]	Presentation & Documentation
-License
+## Contributors
 
-This project is developed for educational purposes as part of the Distributed Systems course at [Your University Name].
+| Name                      | ID         | Role                         |
+| ------------------------- | ---------- | ---------------------------- |
+| Nouran Hassan Ahmed       | 2022/00062 | Mapper & Project Coordinator |
+| [Add teammate names here] | [ID]       | Reducer Implementation       |
+| [Add teammate names here] | [ID]       | Driver Setup & Testing       |
+| [Add teammate names here] | [ID]       | Presentation & Documentation |
+
+---
+
+## License
+
+This project is developed for educational purposes as part of the **Distributed Systems** course at **[Your University Name]**.
 You may reuse and modify it for learning and research purposes.
+
+```
+
+---
+
+Would you like me to make a **shorter summary version** (like for your GitHub project description box) — just a few lines that will appear under the repo title?
+```
